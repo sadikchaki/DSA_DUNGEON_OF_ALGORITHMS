@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Dungeon Of Algorithms</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<div id="hud">
+
+<div id="health">
+
+❤️ HP :
+<span id="hp">
+100
+</span>
+
+</div>
+
+<div id="coins">
+
+🪙 Coins :
+<span id="coinCount">
+
+0
+
+</span>
+
+</div>
+
+<div id="level">
+
+Level
+
+1
+
+</div>
+
+</div>
+
+<div id="battleOverlay">
+
+    <div class="battleBox">
+
+        <h2>⚔️ ALGORITHM DUEL ⚔️</h2>
+
+        <h3 id="enemyName"></h3>
+
+        <div id="enemyHPContainer">
+    <p>Enemy HP</p>
+    <progress id="enemyHP" value="30" max="30"></progress>
+    <span id="enemyHPText">30 / 30</span>
+</div>
+
+<br>
+
+<div id="playerHPContainer">
+    <p>Player HP</p>
+    <progress id="playerHP" value="100" max="100"></progress>
+    <span id="playerHPText">100 / 100</span>
+</div>
+
+<hr><br>
+
+        <h4 id="puzzleTopic"></h4>
+
+        <p id="puzzleQuestion"></p>
+
+        <div id="answerContainer"></div>
+
+    </div>
+
+</div>
+
+<canvas id="gameCanvas" width="960" height="640"></canvas>
+
+<script src="{{ url_for('static', filename='js/input.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/maps.js') }}"></script>
+
+<!-- Level Data -->
+<script src="{{ url_for('static', filename='js/levels/level1.js') }}"></script>
+<script src="{{ url_for('static', filename='js/levels/level2.js') }}"></script>
+<script src="{{ url_for('static', filename='js/levels/level3.js') }}"></script>
+<script src="{{ url_for('static', filename='js/levels/boss.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/player.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/enemy.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/chest.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/battle.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/ui.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/api.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/check.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/effects.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/level.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/progress.js') }}"></script>
+
+<script>
+
+const CURRENT_LEVEL = Number("{{ level }}");
+
+</script>
+
+<script src="{{ url_for('static', filename='js/game.js') }}"></script>
+</body>
+
+</html>

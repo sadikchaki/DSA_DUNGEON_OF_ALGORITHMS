@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DungeonDSA - Level Select</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            background:#181818;
+            color:white;
+            font-family:Arial, Helvetica, sans-serif;
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+            height:100vh;
+        }
+
+        .menu{
+            text-align:center;
+            width:500px;
+        }
+
+        h1{
+            font-size:50px;
+            margin-bottom:40px;
+        }
+
+        button{
+
+            width:300px;
+            height:60px;
+
+            margin:10px;
+
+            font-size:22px;
+
+            cursor:pointer;
+
+            border:none;
+
+            border-radius:10px;
+
+            transition:.2s;
+        }
+
+        button:hover{
+
+            transform:scale(1.03);
+
+        }
+
+        button:disabled{
+
+            opacity:.6;
+            cursor:not-allowed;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="menu">
+
+<h1>Select Level</h1>
+
+<button id="level1">
+🟢 Level 1 - Arrays
+</button>
+
+<br>
+
+<button id="level2" disabled>
+🔒 Level 2 - Searching
+</button>
+
+<br>
+
+<button id="level3" disabled>
+🔒 Level 3 - Sorting
+</button>
+
+<br>
+
+<button id="boss" disabled>
+👑 Boss Battle
+</button>
+
+<br><br>
+
+<button onclick="location.href='/'">
+⬅ Back
+</button>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/progress.js') }}"></script>
+
+<script>
+
+// =========================
+// Unlock Buttons
+// =========================
+
+if(unlockedLevel >= 2){
+
+    const btn = document.getElementById("level2");
+
+    btn.disabled = false;
+
+    btn.innerHTML = "🟢 Level 2 - Searching";
+
+}
+
+if(unlockedLevel >= 3){
+
+    const btn = document.getElementById("level3");
+
+    btn.disabled = false;
+
+    btn.innerHTML = "🟢 Level 3 - Sorting";
+
+}
+
+if(unlockedLevel >= 4){
+
+    const btn = document.getElementById("boss");
+
+    btn.disabled = false;
+
+    btn.innerHTML = "👑 Boss Battle";
+
+}
+
+// =========================
+// Button Actions
+// =========================
+
+document.getElementById("level1").onclick = function(){
+
+    location.href="/game/1";
+
+};
+
+document.getElementById("level2").onclick = function(){
+
+    if(unlockedLevel >= 2){
+
+        location.href="/game/2";
+
+    }
+
+};
+
+document.getElementById("level3").onclick = function(){
+
+    if(unlockedLevel >= 3){
+
+        location.href="/game/3";
+
+    }
+
+};
+
+document.getElementById("boss").onclick = function(){
+
+    if(unlockedLevel >= 4){
+
+        location.href="/game/4";
+
+    }
+
+};
+
+</script>
+
+</body>
+
+</html>

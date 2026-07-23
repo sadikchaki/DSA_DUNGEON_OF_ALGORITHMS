@@ -3,6 +3,28 @@
 
 <head>
 
+    <head>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #111;
+}
+
+</style>
+
+</head>
+
 <meta charset="UTF-8">
 
 <title>Dungeon Of Algorithms</title>
@@ -79,7 +101,11 @@ Level
 
 </div>
 
-<canvas id="gameCanvas" width="960" height="640"></canvas>
+<div id="gameWrapper">
+
+    <canvas id="gameCanvas"></canvas>
+
+</div>
 
 <script src="{{ url_for('static', filename='js/input.js') }}"></script>
 

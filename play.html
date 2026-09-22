@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dungeon Arcade — Level {{ level }}</title>
+<title>Dungeon Arcade — Level 1</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#07070f;font-family:'Courier New',monospace;color:#fff}
 #hud{position:fixed;top:0;left:0;width:100%;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 4%;background:linear-gradient(180deg,#141428,#0a0a18);border-bottom:2px solid #2de2e6;z-index:10;font-size:18px;text-shadow:0 0 8px #2de2e6}
@@ -25,17 +25,19 @@
 <div id="hud">
 <div>❤️ HP <span class="bar"><span class="fill" id="hpFill" style="width:100%"></span></span> <span id="hp">100</span></div>
 <div>🪙 <span id="coinCount">0</span> &nbsp; 👾 <span id="foeCount">0</span></div>
-<div>Level {{ level }} &nbsp; <span id="score">0</span>pts</div>
+<div>Level <span id="lvl">1</span> &nbsp; <span id="score">0</span>pts</div>
 </div>
 <div id="gameWrapper">
 <div id="objective"><span id="objectiveText">Defeat all monsters!</span></div>
 <canvas id="gameCanvas" width="960" height="640"></canvas>
 <div id="help">WASD / Arrows move &nbsp;•&nbsp; SPACE / J attack &nbsp;•&nbsp; E open chest / enter portal &nbsp;•&nbsp; Art: Kenney.nl (CC0)</div>
 </div>
+<div id="err" style="position:fixed;top:70px;left:10px;z-index:99;max-width:90%;background:#300;color:#fff;padding:8px 12px;font:13px monospace;border:2px solid red;border-radius:8px;display:none"></div>
+<script>window.addEventListener('error',function(e){var d=document.getElementById('err');d.style.display='block';d.textContent='JS ERROR: '+(e.message||e.error)+' @'+(e.lineno||'?');});</script>
 <div id="overlay"><div class="box"><h1 id="ovTitle">YOU WIN</h1><p id="ovText"></p><button id="ovBtn">Next</button></div></div>
 <script>
 "use strict";
-const CURRENT_LEVEL = Math.max(1, Math.min(4, Number("{{ level }}") || 1));
+let CURRENT_LEVEL = Math.max(1, Math.min(4, (Number(new URLSearchParams(location.search).get("level"))||1)));
 /* ============================================================
    DSA IMPLEMENTATIONS (in-code, player never needs to know)
    - Queue (O(1) head index) : BFS frontier, damage-text pool
@@ -104,7 +106,7 @@ function loadLevel(n){
   hideOverlay();updateHUD();
 }
 // Try server dungeon (DSA-generated), fallback to local — game stays playable offline
-fetch('/api/dungeon/'+CURRENT_LEVEL).then(r=>r.json()).then(d=>{if(d&&d.map&&d.map.length===10){for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const v=d.map[r][c];if(v===2&&grid[r][c]!==2&&grid[r][c]===0)coins.push({c,r,x:c*TILE+32,y:r*TILE+32,taken:false,ph:Math.random()*6});}}}).catch(()=>{});
+(location.protocol==='file:'?Promise.reject(new Error('static')):fetch('/api/dungeon/'+CURRENT_LEVEL).then(r=>r.json()).then(d=>{if(d&&d.map&&d.map.length===10){for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const v=d.map[r][c];if(v===2&&grid[r][c]!==2&&grid[r][c]===0)coins.push({c,r,x:c*TILE+32,y:r*TILE+32,taken:false,ph:Math.random()*6});}}}).catch(()=>{}));
 /* ================= COMBAT ================= */
 function tryAttack(){if(over||win||player.atkCd>0)return;player.atkCd=0.35;player.atkAnim=0.22;beep(220,0.08,'sawtooth');
   const reach=62;let hx=player.x,hy=player.y;if(player.dir==='up')hy-=reach;if(player.dir==='down')hy+=reach;if(player.dir==='left')hx-=reach;if(player.dir==='right')hx+=reach;
@@ -227,14 +229,15 @@ function showOverlay(title,text,btn){ovTitle.textContent=title;ovText.innerHTML=
 function hideOverlay(){overlay.style.display='none';}
 function saveUnlock(n){try{const u=parseInt(localStorage.getItem('unlockedLevel')||'1');if(n>u)localStorage.setItem('unlockedLevel',String(n));}catch(_){}}
 function saveScore(){try{const k='arcadeScores';const arr=JSON.parse(localStorage.getItem(k)||'[]');arr.push({s:player.score,c:player.coins,l:CURRENT_LEVEL,t:Date.now()});const sorted=quickSort(arr,x=>x.s).slice(0,5);localStorage.setItem(k,JSON.stringify(sorted));const idx=binarySearchDesc(sorted,player.score,x=>x.s);return idx;}catch(_){return 0;}}
-function gameOver(){over=true;beep(90,0.4,'sawtooth');const rank=saveScore();showOverlay('💀 GAME OVER','Score '+player.score+' • Coins '+player.coins+'<br>Tip: attack first, dodge after hit!','Retry Level');ovBtn.onclick=()=>{location.reload();};}
+function setLvl(n){CURRENT_LEVEL=n;var e=document.getElementById('lvl');if(e)e.textContent=n;}
+function gameOver(){over=true;beep(90,0.4,'sawtooth');saveScore();showOverlay('💀 GAME OVER','Score '+player.score+' • Coins '+player.coins+'<br>Tip: attack first, dodge after hit!','Retry Level');ovBtn.onclick=()=>{var c=player.coins,s=player.score;loadLevel(CURRENT_LEVEL);player.coins=c;player.score=s;updateHUD();};}
 function levelClear(){win=true;beep(660,0.12,'square');setTimeout(()=>beep(880,0.2,'square'),130);
-  if(CURRENT_LEVEL>=4){const rank=saveScore();saveUnlock(5);showOverlay('🏆 YOU BEAT THE DUNGEON!','Final score '+player.score+' • Coins '+player.coins+'<br>Rank #'+(rank+1)+' (sorted with QuickSort)<br>DSA lives in the code: BFS pathfinding, Queue, Stack, QuickSort.','Play Again');ovBtn.onclick=()=>{location.href='/levels';};}
-  else{saveUnlock(CURRENT_LEVEL+1);saveScore();showOverlay('🎉 LEVEL '+CURRENT_LEVEL+' CLEAR!','Score '+player.score+' • Coins '+player.coins+'<br>Next: Level '+(CURRENT_LEVEL+1),'Next Level');ovBtn.onclick=()=>{location.href='/loading?level='+(CURRENT_LEVEL+1);};}}
+  if(CURRENT_LEVEL>=4){var rank=saveScore();saveUnlock(5);showOverlay('🏆 YOU BEAT THE DUNGEON!','Final score '+player.score+' • Coins '+player.coins+'<br>Rank #'+(rank+1)+' (sorted with QuickSort)<br>DSA lives in the code: BFS pathfinding, Queue, Stack, QuickSort.','Play Again');ovBtn.onclick=()=>{setLvl(1);var s=0,c=0;loadLevel(1);player.score=s;player.coins=c;win=false;updateHUD();};}
+  else{var nc=CURRENT_LEVEL+1;saveUnlock(nc);saveScore();var kc=player.coins,ks=player.score;showOverlay('🎉 LEVEL '+CURRENT_LEVEL+' CLEAR!','Score '+ks+' • Coins '+kc+'<br>Next: Level '+nc,'Next Level (E)');ovBtn.onclick=function(){setLvl(nc);loadLevel(nc);player.coins=kc;player.score=ks;win=false;updateHUD();};}}
 /* ================= LOOP ================= */
 function loop(now){const dt=Math.min(0.033,(now-last)/1000);last=now;update(dt);draw();requestAnimationFrame(loop);}
 addEventListener('resize',()=>{});
-loadLevel(CURRENT_LEVEL);requestAnimationFrame(loop);
+try{loadLevel(CURRENT_LEVEL);}catch(e){document.getElementById("err").style.display="block";document.getElementById("err").textContent="LOAD FAIL: "+e.message;throw e;}var firstFrame=true;var __origDraw=draw;draw=function(){__origDraw();if(firstFrame){firstFrame=false;console.log("first frame ok");}};requestAnimationFrame(loop);
 </script>
 </body>
 </html>

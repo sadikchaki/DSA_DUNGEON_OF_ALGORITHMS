@@ -109,7 +109,10 @@
 
 </div>
 
-<script src="{{ url_for('static', filename='js/progress.js') }}"></script>
+<script>
+// Progress tracking (inlined)
+let unlockedLevel = parseInt(localStorage.getItem("unlockedLevel")) || 1;
+</script>
 
 <script>
 

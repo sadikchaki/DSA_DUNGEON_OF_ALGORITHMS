@@ -14,10 +14,10 @@ skeleton_lines = [
     "💀 Find the cursed number"
 ]
 
-golem_lines = [
-    "🪨 Ancient Golem\nOnly the worthy may pass.\nLocate",
-    "🪨 Stone Guardian\nFind the sacred rune",
-    "🪨 The earth trembles...\nSearch for"
+minotaur_lines = [
+    "👹 Ancient Minotaur\nOnly the worthy may pass.\nLocate",
+    "👹 Stone Guardian\nFind the sacred rune",
+    "👹 The earth trembles...\nSearch for"
 ]
 
 slime_lines = [
@@ -44,8 +44,8 @@ def generate_search_question(enemy="slime"):
     elif enemy == "skeleton":
         title = random.choice(skeleton_lines)
 
-    elif enemy == "golem":
-        title = random.choice(golem_lines)
+    elif enemy == "minotaur":
+        title = random.choice(minotaur_lines)
 
     else:
         title = random.choice(slime_lines)

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dungeon Arcade — Level {{ level }}</title>
 <style>
+{% raw %}
 *{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#07070f;font-family:'Courier New',monospace;color:#fff}
 #hud{position:fixed;top:0;left:0;width:100%;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 4%;background:linear-gradient(180deg,#141428,#0a0a18);border-bottom:2px solid #2de2e6;z-index:10;font-size:18px;text-shadow:0 0 8px #2de2e6}
 #hud .bar{width:140px;height:12px;background:#222;border:1px solid #555;border-radius:6px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:8px}
@@ -19,6 +20,7 @@
 #overlay button:hover{background:#2de2e6;transform:scale(1.05)}
 #help{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:12px;opacity:.7;pointer-events:none;white-space:nowrap}
 @media(max-width:700px){#hud{font-size:13px}#help{display:none}}
+{% endraw %}
 </style>
 </head>
 <body>
